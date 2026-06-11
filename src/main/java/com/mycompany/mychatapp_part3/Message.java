@@ -29,14 +29,6 @@ import java.io.BufferedReader;
  */
 public class Message {
 
-    static String checkRecipientCellStatus(String recipient) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    static String checkMessageText(String messageText) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
     // Instance variables required by POE Section 4
     private String messageID;
     private int messageNumber;
@@ -159,7 +151,7 @@ public class Message {
                 return "Press 0 to delete the message.";
             case 3:
                 this.sendStatus = "Stored";
-                storeMessageToFile(); // ATTRIBUTION: Gson library used â€” see class Javadoc
+                storeMessageToFile(); // ATTRIBUTION: Gson library used - see class Javadoc
                 totalMessages++;
                 return "Message successfully stored.";
             default:
@@ -183,7 +175,7 @@ public class Message {
 
     /**
      * Stores individual message instances safely inside a structural messages.json archive.
-     * ATTRIBUTION: Google Gson (version 2.10.1) â€” https://mvnrepository.com/artifact/com.google.gson/gson
+     * ATTRIBUTION: Google Gson (version 2.10.1) - https://mvnrepository.com/artifact/com.google.gson/gson
      */
     public void storeMessageToFile() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -214,6 +206,30 @@ public class Message {
             System.out.println("Error writing to messages.json: " + e.getMessage());
         }
     }
+    
+    /**
+ * Loads all previously stored messages from the messages.json file.
+ * Returns an empty list if the file does not exist or is empty.
+ */
+public static List<Message> loadMessagesFromFile() {
+    Gson gson = new Gson();
+    String filename = "messages.json";
+    File messageFile = new File(filename);
+    List<Message> messages = new ArrayList<>();
+
+    if (messageFile.exists() && messageFile.length() > 0) {
+        try (FileReader reader = new FileReader(messageFile)) {
+            Type messageListType = new TypeToken<List<Message>>() {}.getType();
+            messages = gson.fromJson(reader, messageListType);
+            if (messages == null) {
+                messages = new ArrayList<>();
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading messages from file: " + e.getMessage());
+        }
+    }
+    return messages;
+}
 
     /**
      * Returns total message operations tracked throughout the active system lifetime.
@@ -231,4 +247,3 @@ public class Message {
     public String getMessageHash() { return messageHash; }
     public String getSendStatus() { return sendStatus; }
 }
-

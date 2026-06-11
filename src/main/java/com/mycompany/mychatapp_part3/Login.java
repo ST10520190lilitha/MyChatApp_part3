@@ -81,7 +81,7 @@ public class Login {
             return "Error saving user.";
         }
 
-        return "User registration successful.";
+        return "User successfully registered. Welcome " + username + "!";
     }
 
     // Login user

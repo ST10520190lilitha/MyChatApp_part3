@@ -47,6 +47,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
-        <exec.mainClass>com.mycompany.mychatapp_part3.MyChatApp_part3</exec.mainClass>
+        <exec.mainClass>com.mycompany.mychatapp_part3.Main</exec.mainClass>
     </properties>
 </project>

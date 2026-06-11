@@ -5,7 +5,6 @@
 
 package com.mycompany.mychatapp_part3;
 
-
 import java.util.Scanner;
 
 /**
@@ -68,19 +67,23 @@ public class Main {
             boolean loggedIn = false;
 
             // LOOP until login succeeds
-            do {
-                System.out.print("Enter username: ");
-                String loginUsername = input.nextLine();
-                System.out.print("Enter password: ");
-                String loginPassword = input.nextLine();
+do {
+    System.out.print("Enter username: ");
+    String loginUsername = input.nextLine();
+    System.out.print("Enter password: ");
+    String loginPassword = input.nextLine();
 
-                loggedIn = login.loginUser(loginUsername, loginPassword);
-                System.out.println(login.returnLoginStatus(loggedIn));
+    loggedIn = login.loginUser(loginUsername, loginPassword);
 
-                if (!loggedIn) {
-                    System.out.println("Please try again.");
-                }
-            } while (!loggedIn);
+    if (loggedIn) {
+        // Display personalised welcome message using name and surname from registration
+        System.out.println("Welcome " + name + " " + surname + ", it is great to see you again.");
+    } else {
+        // Display failure message and prompt retry
+        System.out.println("Username or password incorrect, please try again.");
+        System.out.println("Please try again.");
+    }
+} while (!loggedIn);
 
             // ================= PART 2: MAIN MENU SECTION =================
             System.out.println("Welcome to QuickChat.");
@@ -124,39 +127,80 @@ public class Main {
                             String messageID = Message.generateMessageID();
 
                             // INNER WHILE LOOP: validate recipient cell number
+                            // checkRecipientCellStatus() is an instance method with no parameters,
+                            // so we create a temporary Message object to call it for validation
                             String recipient;
                             while (true) {
                                 System.out.print("Enter recipient cell number (+27...): ");
                                 recipient = input.nextLine();
-                                String RecipientStatus = Message.checkRecipientCellStatus(recipient);
-                                if (RecipientStatus.equals("Cell phone number successfully captured.")) {
+                                Message tempMessage = new Message(messageID, recipient, "");
+                                String recipientStatus = tempMessage.checkRecipientCellStatus();
+                                if (recipientStatus.equals("Cell phone number successfully captured.")) {
                                     break;
                                 }
-                                System.out.println(RecipientStatus);
+                                System.out.println(recipientStatus);
                             }
 
                             // INNER WHILE LOOP: validate message text (max 250 characters)
+                            // checkMessageLength(String) is an instance method, so we call it
+                            // on a temporary Message object passing in the typed message text
                             String messageText;
                             while (true) {
                                 System.out.print("Enter message (max 250 characters): ");
                                 messageText = input.nextLine();
-                                String lengthStatus = Message.checkMessageText(messageText);
+                                Message tempMessage = new Message(messageID, recipient, messageText);
+                                String lengthStatus = tempMessage.checkMessageLength(messageText);
                                 if (lengthStatus.equals("Message ready to send.")) {
                                     break;
                                 }
                                 System.out.println(lengthStatus);
                             }
 
-                            // Create the Message object with the generated ID
+                            // Create the final Message object with the generated ID
                             Message message = new Message(messageID, recipient, messageText);
 
                             // Set the message number using the loop counter
                             message.setMessageNumber(messageNumber);
 
-                            // 
+                            // Generate and display the message hash
+                            String hash = message.createMessageHash();
+                            System.out.println("Message Hash: " + hash);
+
+                            // Prompt user to Send, Disregard, or Store the message
+                            System.out.println("\nWhat would you like to do with this message?");
+                            System.out.println("1) Send");
+                            System.out.println("2) Disregard");
+                            System.out.println("3) Store");
+                            System.out.print("Choose an option: ");
+
+                            int sendChoice;
+                            try {
+                                sendChoice = Integer.parseInt(input.nextLine().trim());
+                            } catch (NumberFormatException e) {
+                                sendChoice = 2; // Default to Disregard if invalid input
+                            }
+
+                            // Process the send/disregard/store decision and display result
+                            System.out.println(message.sentMessage(sendChoice));
                         }
-                } 
-            } 
-        } 
-    } 
+                        break;
+
+                    case 2:
+                        // Show recently sent messages
+                        System.out.println("No messages to display yet.");
+                        break;
+
+                    case 3:
+                        // Quit the application
+                        running = false;
+                        System.out.println("Goodbye!");
+                        break;
+
+                    default:
+                        // Handle any input outside 1-3
+                        System.out.println("Invalid option. Please enter 1, 2, or 3.");
+                }
+            }
+        }
+    }
 }
