@@ -1,6 +1,6 @@
-#ChatApplicationPart1
+ChatApplicationPart1 
 
-##Student Information
+Student Information
 
 St10520190
 
@@ -10,4 +10,4 @@ PROG5121
 
 ---
 
-##Project Information 
+Project Information 
